@@ -1,0 +1,134 @@
+                                 ifplugd 0.28
+Overview
+
+   ifplugd is a Linux daemon which will automatically configure your
+   ethernet device when a cable is plugged in and automatically
+   unconfigure it if the cable is pulled. This is useful on laptops with
+   onboard network adapters, since it will only configure the interface
+   when a cable is really connected.
+
+   ifplugd ifplugd interfaces with your distribution's native network
+   configuration utilities.
+
+   Some features:
+     * Uses your distribution's native ifup/ifdown programs.
+     * May beep when the cable is unplugged, plugged, the interface
+       configuration succeeded or failed.
+     * Supports the Linux SIOCETHTOOL (newer, aka ethtool API),
+       SIOCGMIIREG (older, aka mii-diag/mii-tool API) and SIOCDEVPRIVATE
+       (oldest, aka mii-tool API) ioctl()s for getting link status.
+       Release 0.24 introduces support for link detection with the
+       IFF_RUNNING interface flag.
+     * Syslog support
+     * Small program - the binary is just 25 KB (plus 16 KB for
+       libdaemon).
+     * Multiple ethernet interface support
+     * Can be configured to ignore short "unplugged" periods (-d option)
+       or short "plugged" periods(-u option)
+     * Support for wireless networking. Whenever an association to an AP
+       is detected the network is configured. Have a look on [29]waproamd
+       if you need a facility to configure WEP keys before AP
+       associations succeed.
+     * Compatibility mode for network devices which do not support cable
+       detection (-F option)
+
+Current Status
+
+   Version 0.28 is stable and has all the sensible features its users
+   could think of.
+
+Documentation
+
+   Have a look on the man pages [30]ifplugd(8), [31]ifplugstatus(8),
+   [32]ifplugd.conf(5). (An XSLT capable browser is required)
+
+  Configuration
+
+   Edit /etc/ifplugd/ifplugd.conf for configuration changes. This file is
+   a bourne shell script sourced by the init script and used to start
+   ifplugd with appropriate arguments. You may specify more than one
+   ethernet interface in INTERFACES. For each interface a seperate
+   instance of ifplugd is spawned. The arguments specified in ARGS are
+   append to ifplugd's command line. Have a look on ifplugd -h or man
+   ifplugd for further information about the available options.
+
+   The network interface which is controlled by ifplugd should not be
+   configured automatically by your distribution's network subsystem,
+   since ifplugd will do this for you if needed.
+
+   On Debian systems, any interfaces named in ifplugd's INTERFACES
+   environment variable should not also be listed in an "auto" stanza in
+   /etc/network/interfaces.
+
+  Troubleshooting
+
+   When you are using the hotplug subsystem (Debian package hotplug) you
+   may notice that the network device is configured even when it is not
+   listed on an auto line in /etc/network/interfaces. This may be due to
+   hotplug being configured to ifup the network interface when it becomes
+   available. This was the default behavior in the Debian hotplug package
+   prior to release 0.0.20030117-1, for example. To prevent this you
+   should either upgrade your hotplug package or comment out the ifup
+   call in /etc/hotplug/net.agent.
+
+   When using ifplugd together with APM (and probably ACPI) suspends,
+   strange things may happen: some network devices fail to detect the
+   network cable for a short period of time before and after the suspend.
+   When using the -f switch, this will be treated as "no link beat", thus
+   the network is shutdown after a timeout. During this timeout the
+   machine changes to suspended state. When it is resumed again, the
+   timeout period will have expired and so the network is deconfigured,
+   however, as the next cable detection succeeds, the network is
+   configured again immediately. To fix this problem, ifplugd should be
+   disabled before the APM suspend and enabled back after the suspend.
+   This may be done by using apmd and adding a script to
+   /etc/apm/{suspend,resume}.d which simply calls /etc/init.d/ifplugd
+   suspend, resp. /etc/init.d/ifplugd resume. It might even be a good
+   idea to shut down the network completely during suspend, this may be
+   achieved by calling /etc/init.d/ifplugd stop and /etc/init.d/ifplugd
+   start in the appropriate places. I strongly urge the packagers of this
+   software for the Linux distributions to add such scripts to their
+   packages.
+
+Requirements
+
+   A newer Linux Kernel (I think 2.2 is good enough, alltough I tested it
+   only with 2.4) with a compatible device driver and ethernet card. Most
+   modern cards and drivers are compatible, like mine which works with
+   the 8139too driver.
+
+   ifplugd was developed and tested on Debian GNU/Linux "testing" from
+   July 2003, it should work on most other Linux distributions (and maybe
+   Unix versions) since it uses GNU autoconf and GNU libtool for source
+   code configuration and shared library management.
+
+   The machine used was a Medion 9580-F laptop with a Realtek 8139
+   network card and a PRISM1 PCMCIA wireless LAN card.
+
+   ifplugd needs [36]libdaemon.
+
+Acknowledgements
+
+   For the developers of mii-diag, ethtool and laptop-net, since I looked
+   on their source codes for learning how to use the link beat ioctls.
+
+   Oliver Kurth for packaging ifplugd for Debian and ifplugd's manpage
+
+   Stefan Seyfried, Thomas Hood, Asgeir Nilsen, Sean Reifschneider, R.
+   Steve McKown, David Mitchell, Norbert Preining, Herbert Graeber for
+   patches
+
+   Frederic Lepied for integrating ifplugd into Mandrake Linux
+
+    Lennart Poettering <mzvscyhtq (at) 0pointer (dot) de>, June 2005
+
+   $Id: README.html.in 124 2005-06-04 19:22:59Z lennart $
+
+References
+
+  28. http://0pointer.de/lennart/projects/libdaemon/
+  29. http://0pointer.de/lennart/projects/waproamd/
+  30. http://0pointer.de/lennart/projects/ifplugd/ifplugd.8.xml
+  31. http://0pointer.de/lennart/projects/ifplugd/ifplugstatus.8.xml
+  32. http://0pointer.de/lennart/projects/ifplugd/ifplugd.conf.5.xml
+  33. http://www.sourceforge.net/projects/gkernel/

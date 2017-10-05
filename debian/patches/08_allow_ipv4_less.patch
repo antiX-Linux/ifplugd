@@ -1,0 +1,27 @@
+From e38f1280af7817305d823db5841a95340efb7e36 Mon Sep 17 00:00:00 2001
+From: Lennart Poettering <lennart@poettering.net>
+Date: Tue, 20 Nov 2007 21:25:46 +0000
+Subject: allow ifplugd usage on machines that lack IPv4. Patch from Alon
+ Bar-Lev
+
+git-svn-id: file:///home/lennart/svn/public/ifplugd/trunk@136 2bf48fe7-cfc1-0310-909f-d9042e1e0fef
+---
+ src/ifplugd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/ifplugd.c b/src/ifplugd.c
+index ddbb024..99ab489 100644
+--- a/src/ifplugd.c
++++ b/src/ifplugd.c
+@@ -424,7 +424,7 @@
+             break;
+     }
+ 
+-    if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
++    if ((fd = socket(AF_LOCAL, SOCK_DGRAM, 0)) < 0) {
+         daemon_log(LOG_ERR, "socket(): %s", strerror(errno));
+         goto finish;
+     }
+-- 
+cgit v0.12
+

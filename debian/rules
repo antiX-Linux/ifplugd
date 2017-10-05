@@ -1,0 +1,50 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+confopts = --disable-subversion \
+	--disable-xmltoman \
+	--disable-lynx
+
+override_dh_auto_configure:
+	[ ! -f ifplugd.spec ] || mv -f ifplugd.spec ifplugd.spec.ups
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	[ ! -f doc/README.html ] || mv -f doc/README.html doc/README.html.ups
+	dh_auto_configure -- $(confopts)
+
+override_dh_clean:
+	[ ! -f Makefile ] || $(MAKE) distclean
+	[ ! -f doc/README.html.ups ] || mv -f doc/README.html.ups doc/README.html
+	rm -f config.guess config.sub
+	[ ! -f ifplugd.spec.ups ] || mv -f ifplugd.spec.ups ifplugd.spec
+	debconf-updatepo
+	dh_clean
+
+override_dh_auto_install:
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/ifplugd
+	# now handled by debconf:
+	rm -f $(CURDIR)/debian/ifplugd/etc/ifplugd/ifplugd.conf
+	install -m 755 debian/ifplugd.udev.agent $(CURDIR)/debian/ifplugd/lib/udev/ifplugd.agent
+	install -m 755 debian/ifplugd.action $(CURDIR)/debian/ifplugd/etc/ifplugd/
+	install -m 755 debian/ifupdown.action $(CURDIR)/debian/ifplugd/etc/ifplugd/action.d/ifupdown
+	install -m 755 debian/pm/ifplugd $(CURDIR)/debian/ifplugd/etc/apm/scripts.d/
+	install -m 755 debian/pm/ifplugd $(CURDIR)/debian/ifplugd/etc/pm/sleep.d/74ifplugd
+	install -m 755 debian/ifstatus $(CURDIR)/debian/ifplugd/usr/sbin/
+	install -m 755 debian/bug/script $(CURDIR)/debian/ifplugd/usr/share/bug/ifplugd/
+
+override_dh_installchangelogs:
+	dh_installchangelogs doc/ChangeLog
+
+override_dh_installinit:
+	dh_installinit --noscripts
+
+%:
+	dh "$@" --with=autotools-dev
+
+.PHONY: override_dh_auto_configure override_dh_clean override_dh_auto_install override_dh_installinit override_dh_installchangelogs

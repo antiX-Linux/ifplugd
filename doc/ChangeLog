@@ -1,0 +1,116 @@
+   Sat Jun 4 2005:
+
+   [10]Version 0.28 released, changes include: build fixes from Stefan
+   Seyfried.
+
+   Wed Mar 30 2005:
+
+   [11]Version 0.27 released, changes include: new option --no-startup.
+
+   Sun Dec 19 2004:
+
+   [12]Version 0.26 released, changes include: changed MII code for
+   better compatibility with some 3COM Boomerang cards.
+
+   Mon May 10 2004:
+
+   [13]Version 0.25 released, changes include: Revert to more classic
+   link checking support. The new checking order is: ETHTOOL, MII, WLAN,
+   IFF. The obsolete API "PRIV" is no longer checked by the automatic API
+   detection code. However, you may enable it forcibly by passing -m priv
+   on the command line.
+
+   Mon Apr 12 2004:
+
+   [14]Version 0.24 released, changes include: add IFF_RUNNING link check
+   support and make it the default. This might break some setups. You may
+   workaround this by passing -m to the daemon for selecting a different
+   API. Please report breakages!
+
+   Wed Apr 7 2004:
+
+   [15]Version 0.23 released, changes include: don't make /dev/tty1 the
+   controlling TTY when beeping
+
+   Tue Feb 10 2004:
+
+   [16]Version 0.22 released, changes include: rename ifstatus to
+   ifplugstatus due to namespace collision, minor fixes
+
+   Mon Jan 26 2004:
+
+   [17]Version 0.21b released, added missing file.
+
+   Mon Jan 26 2004:
+
+   [18]Version 0.21 released, changes include: better compatibility with
+   wireless devices, compatibility with newer kernels
+
+   Sun Nov 9 2003:
+
+   [19]Version 0.20 released, changes include: fix wrong message, build
+   fix
+
+   Mon Oct 20 2003:
+
+   [20]Version 0.19 released, changes include: New option
+   --wait-for-kill, this requires [21]libdaemon 0.3
+
+   Fri Oct 17 2003:
+
+   [22]Version 0.18 released, changes include: Some bugs fixed
+
+   Fri Sep 13 2003:
+
+   [23]Version 0.17b released, changes include: typo and date fix
+
+   Fri Sep 13 2003:
+
+   [24]Version 0.17 released, changes include: documentation update,
+   better support for multiple interfaces, gcc 2.95 build fix
+
+   Thu Aug 13 2003:
+
+   [25]Version 0.16 released, changes include: RPM spec file added, build
+   fixes, WLAN improvements (including compatibility with the upcoming
+   waproamd, a WLAN roaming daemon), monitor mode for use in conjunction
+   with PCMCIA devices, better support for multiple interface setups,
+   SUPPORTED_DRIVERS returns
+
+   Thu July 10 2003:
+
+   [26]Version 0.15 released, changes include: bad umask fix,
+   documentation update
+
+   Mon July 7 2003:
+
+   [27]Version 0.14 released, changes include: autoconf usage, new
+   dependency [28]libdaemon, wireless LAN support, support for
+   suspending/resuming, many fixes
+
+    Lennart Poettering <mzvscyhtq (at) 0pointer (dot) de>, June 2005
+
+   $Id: README.html.in 124 2005-06-04 19:22:59Z lennart $
+
+References
+
+   9. README#download
+  10. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.27.tar.gz
+  11. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.27.tar.gz
+  12. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.26.tar.gz
+  13. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.25.tar.gz
+  14. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.24.tar.gz
+  15. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.23.tar.gz
+  16. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.22.tar.gz
+  17. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.21b.tar.gz
+  18. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.21.tar.gz
+  19. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.20.tar.gz
+  20. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.19.tar.gz
+  21. http://0pointer.de/lennart/projects/libdaemon/
+  22. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.18.tar.gz
+  23. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.17b.tar.gz
+  24. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.17.tar.gz
+  25. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.16.tar.gz
+  26. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.15.tar.gz
+  27. http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.14.tar.gz
+  28. http://0pointer.de/lennart/projects/libdaemon/

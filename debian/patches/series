@@ -1,0 +1,8 @@
+01_loff_t_dev_t_conflict.patch
+02_manpage_paths_and_typos.patch
+03_split_README_ChangeLog_FAQ.patch
+04_up_down_beep_options.patch
+05_396895_HOTPLUG_conf_man.patch
+06_509015_better_delays.patch
+07_add_fractional_delays.patch
+08_allow_ipv4_less.patch

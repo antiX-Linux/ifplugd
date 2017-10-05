@@ -1,0 +1,97 @@
+From: <root@cvt-xs6>
+Subject: No description.
+
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' ifplugd-0.28~/man/ifplugd.8 ifplugd-0.28/man/ifplugd.8
+--- ifplugd-0.28~/man/ifplugd.8	2011-08-22 17:20:53.000000000 +0400
++++ ifplugd-0.28/man/ifplugd.8	2011-08-22 17:22:09.000000000 +0400
+@@ -48,6 +48,9 @@
+ \fB\-t | \-\-poll-time=\f1 \fISECS\f1
+ Specify poll time in seconds (default: 1) 
+ .TP
++\fB\-T | \-\-poll-utime=\f1 \fIUSECS\f1
++Specify poll time in microseconds, added to -t (default: 0) 
++.TP
+ \fB\-u | \-\-delay-up=\f1 \fISECS\f1
+ Specify delay for configuring interface (default: 0) 
+ .TP
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' ifplugd-0.28~/man/ifplugd.8.xml.in ifplugd-0.28/man/ifplugd.8.xml.in
+--- ifplugd-0.28~/man/ifplugd.8.xml.in	2011-08-22 17:20:53.000000000 +0400
++++ ifplugd-0.28/man/ifplugd.8.xml.in	2011-08-22 17:20:53.000000000 +0400
+@@ -132,6 +132,13 @@
+ 			Specify poll time in seconds (default: 1)
+ 		  </p></optdesc>
+ 	  </option>
++
++	  <option>
++		<p><opt>-T | --poll-utime=</opt> <arg>USECS</arg></p>
++		<optdesc><p>
++			Specify poll time in useconds, summing with -t (default: 1)
++		  </p></optdesc>
++	  </option>
+ 	  
+ 	  <option>
+ 		<p><opt>-u | --delay-up=</opt> <arg>SECS</arg></p>
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' ifplugd-0.28~/src/ifplugd.c ifplugd-0.28/src/ifplugd.c
+--- ifplugd-0.28~/src/ifplugd.c	2011-08-22 17:20:53.000000000 +0400
++++ ifplugd-0.28/src/ifplugd.c	2011-08-22 17:20:53.000000000 +0400
+@@ -68,6 +68,7 @@
+ char *extra_arg = NULL;
+ 
+ int polltime = 1,
++    pollutime = 0,
+     delay_up = 0,
+     delay_down = 5;
+ 
+@@ -483,7 +484,7 @@
+         struct timeval tv;
+ 
+         tv.tv_sec = polltime;
+-        tv.tv_usec = 0;
++        tv.tv_usec = pollutime;
+         
+         if (t) {
+             int delay = t - time(NULL);
+@@ -664,6 +665,7 @@
+            "   -r --run=EXEC             Specify program to execute (%s)\n"
+            "   -I --ignore-retval        Don't exit on nonzero return value of program executed (%s)\n"
+            "   -t --poll-time=SECS       Specify poll time in seconds (%i)\n"
++           "   -T --poll-utime=USECS     Specify poll time in microseconds, add to -t (%i)\n"
+            "   -u --delay-up=SECS        Specify delay for configuring interface (%i)\n"
+            "   -d --delay-down=SECS      Specify delay for deconfiguring interface (%i)\n"
+            "   -m --api-mode=MODE        Force API mode (mii, priv, ethtool, wlan, auto) (%s)\n"
+@@ -694,6 +696,7 @@
+            run,
+            ignore_retval ? "on" : "off",
+            polltime,
++           pollutime,
+            delay_up,
+            delay_down,
+            m,
+@@ -719,6 +722,7 @@
+         {"iface",                required_argument, 0, 'i'},
+         {"run",                  required_argument, 0, 'r'},
+         {"poll-time",            required_argument, 0, 't'},
++        {"poll-utime",           required_argument, 0, 'T'},
+         {"delay-up",             required_argument, 0, 'u'},
+         {"delay-down",           required_argument, 0, 'd'},
+         {"api-mode",             required_argument, 0, 'm'},
+@@ -744,7 +748,7 @@
+     for (;;) {
+         int c;
+         
+-        if ((c = getopt_long(argc, argv, "asni:r:t:u:d:hkbUDfFvm:pqwx:cISRzlMW", long_options, &option_index)) < 0)
++        if ((c = getopt_long(argc, argv, "asni:r:t:T:u:d:hkbUDfFvm:pqwx:cISRzlMW", long_options, &option_index)) < 0)
+             break;
+ 
+         switch (c) {
+@@ -772,6 +776,10 @@
+                 polltime = atoi(optarg);
+                 if (polltime < 0) polltime = 0;
+                 break;
++            case 'T':
++                pollutime = atoi(optarg);
++                if (pollutime < 0) pollutime = 0;
++                break;
+             case 'u':
+                 delay_up = atoi(optarg);
+                 break;
